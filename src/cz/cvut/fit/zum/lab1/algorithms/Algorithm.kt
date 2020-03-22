@@ -13,7 +13,8 @@ abstract class Algorithm(val maze: Maze) {
     protected val opened = mutableListOf<Component>()
     protected var current: Component = maze.getNodeByPosition(maze.start)
     abstract val name: String
-    var finishMessage: String? = null
+    var expandedNumber = 0
+    var finishMessage: String = ""
 
     fun expand() {
         if (hasNext()) {
@@ -29,12 +30,14 @@ abstract class Algorithm(val maze: Maze) {
     fun openNodes() {
         getAllNeighbours().forEach { neighbour ->
             if (neighbour.state == State.END) {
+                expandedNumber++
                 finished = true
                 finishMessage = current.finish()
                 return
             }
             if (isFresh(neighbour)) {
                 neighbour.state = State.OPENED
+                expandedNumber++
                 opened.add(current.getComponent(neighbour))
             }
         }

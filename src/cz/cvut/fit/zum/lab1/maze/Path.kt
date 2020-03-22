@@ -8,7 +8,7 @@ class Path(private val path: MutableList<Node> = mutableListOf()) : Component {
 
     override fun finish(): String {
         path.filter { it.state == State.PATH }.forEach { it.state = State.FINALPATH }
-        return "Length of the path is ${path.size}."
+        return "Length of the path is ${path.size}"
     }
 
     override fun getComponent(node: Node): Component {

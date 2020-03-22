@@ -70,7 +70,10 @@ private fun selectAlgorithm(maze: Maze): Algorithm? {
             "6" -> {
                 return AStar(maze)
             }
-            null, "" -> return RandomSearch(maze)
+            null, "" -> {
+                AlgorithmExecutor(maze).compare()
+                break@loop
+            }
             else -> {
                 println("Wrong input!")
                 selected = null

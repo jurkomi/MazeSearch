@@ -4,7 +4,7 @@ import cz.cvut.fit.zum.lab1.maze.Component
 import cz.cvut.fit.zum.lab1.maze.Maze
 import kotlin.math.hypot
 
-class GreedySearch(maze: Maze) : Algorithm(maze) {
+class GreedySearch(maze: Maze) : PathAlgorithm(maze) {
     override val name: String = "Greedy Search"
 
     override fun next(): Component {

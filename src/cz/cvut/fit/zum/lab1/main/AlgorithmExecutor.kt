@@ -35,6 +35,7 @@ class AlgorithmExecutor(private val maze: Maze) {
         }
         println(algorithm.finishMessage)
         println("\nAlgorithm ${algorithm.name} finished in $i iterations.")
+        println("Nodes expanded: ${algorithm.expandedNumber}")
     }
 
      fun compare() {
@@ -54,8 +55,9 @@ class AlgorithmExecutor(private val maze: Maze) {
     }
 
     private fun iterateComparation(algorithms: List<Algorithm>) {
-        var message: String? = null
-        val scoreMap = mutableMapOf<String, Int>()
+        val iterationsMap = mutableMapOf<String, Int>()
+        val expandedMap = mutableMapOf<String, Int>()
+        val pathMap = mutableMapOf<String, Int>()
         algorithms.forEach { algorithm ->
             var i = 0
             while(!algorithm.finished) {
@@ -65,15 +67,28 @@ class AlgorithmExecutor(private val maze: Maze) {
                 }
                 i++
             }
-            message = algorithm.finishMessage
-            scoreMap[algorithm.name] = i
+            iterationsMap[algorithm.name] = i
+            expandedMap[algorithm.name] = algorithm.expandedNumber
+            pathMap[algorithm.name] = algorithm.finishMessage.split(" ").last().toIntOrNull() ?: -1
         }
-        println("\n$message\n")
+        printScore(iterationsMap, "Iterations:")
+        printScore(expandedMap, "Nodes expanded:")
+        printScore(pathMap, "Path length:")
+    }
+
+    private fun printScore(scoreMap: Map<String, Int>, label: String) {
+        println("\n$label")
+        printSeparator()
         scoreMap.toSortedMap()
             .toList()
             .sortedBy { (_, value) -> value}
             .forEach { (name, i) ->
                 println("$name: $i")
             }
+        printSeparator()
+    }
+
+    private fun printSeparator() {
+        println("--------------------")
     }
 }
