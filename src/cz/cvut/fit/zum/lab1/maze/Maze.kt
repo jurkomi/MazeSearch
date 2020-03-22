@@ -1,8 +1,8 @@
 package cz.cvut.fit.zum.lab1.maze
 
-class Maze(val start: Pair<Int, Int>, val end: Pair<Int, Int>, val nodes: Array<Array<Node>>) {
+class Maze(val start: Pair<Int, Int>, val end: Pair<Int, Int>, private val nodes: Array<Array<Node>>) {
 
-    fun changeNodeState(position: Pair<Int, Int>, state: State) {
+    private fun changeNodeState(position: Pair<Int, Int>, state: State) {
         nodes[position.first][position.second].state = state
     }
 
@@ -26,5 +26,15 @@ class Maze(val start: Pair<Int, Int>, val end: Pair<Int, Int>, val nodes: Array<
 
     fun getNodeByPosition(position: Pair<Int, Int>): Node {
         return nodes[position.first][position.second]
+    }
+
+    fun copy(): Maze {
+        val nodesCopy: Array<Array<Node>> =
+            Array(nodes.size) { row ->
+                Array(nodes.first().size) { col ->
+                    nodes[row][col].copyNode()
+                }
+            }
+        return Maze(start, end, nodesCopy)
     }
 }

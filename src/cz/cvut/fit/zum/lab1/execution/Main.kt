@@ -1,7 +1,6 @@
 package cz.cvut.fit.zum.lab1
 
-import cz.cvut.fit.zum.lab1.algorithms.Algorithm
-import cz.cvut.fit.zum.lab1.algorithms.RandomSearch
+import cz.cvut.fit.zum.lab1.algorithms.*
 import cz.cvut.fit.zum.lab1.helpers.AlgorithmExecutor
 import cz.cvut.fit.zum.lab1.helpers.FileLoader
 import cz.cvut.fit.zum.lab1.maze.Maze
@@ -9,13 +8,12 @@ import java.io.FileNotFoundException
 
 fun main() {
     val maze = checkForFile()
-    //val file = "C:\\Panda\\Škola\\Mgr\\6. semestr\\BI-ZUM\\PU1_prohledavani_stavoveho_prostoru\\dataset\\4.txt"
     if (maze != null) {
         val algorithm = selectAlgorithm(maze)
         if (algorithm != null) {
             val itFreqMs: Long = selectSpeed()
             if (itFreqMs != (-1).toLong()) {
-                AlgorithmExecutor(algorithm, itFreqMs).iterate()
+                AlgorithmExecutor(maze).iterate(algorithm, itFreqMs)
             }
         }
     }
@@ -28,7 +26,7 @@ fun checkForFile(): Maze? {
         println("Enter location of the maze text file:")
         file = readLine()
         when (file) {
-            "exit" -> return@loop
+            "exit" -> break@loop
             null, "" -> {}
             else -> {
                 try {
@@ -47,12 +45,32 @@ fun checkForFile(): Maze? {
 fun selectAlgorithm(maze: Maze): Algorithm? {
     var selected: String? = null
     loop@ while (selected.isNullOrEmpty()) {
-        println("Select algorithm (1 - Random Search):")
+        println("Select algorithm (1 - Random Search, 2 - DFS, 3 - BFS, " +
+                "4 - Greedy Search, 5 - Dijkstra, 6 - A*, 0 - compare all):")
         selected = readLine()
         when (selected) {
-            "exit" -> return@loop
+            "exit" -> break@loop
+            "0" -> {
+                AlgorithmExecutor(maze).compare()
+                break@loop
+            }
             "1" -> {
                 return RandomSearch(maze)
+            }
+            "2" -> {
+                return DepthFirstSearch(maze)
+            }
+            "3" -> {
+                return BreadthFirstSearch(maze)
+            }
+            "4" -> {
+                return GreedySearch(maze)
+            }
+            "5" -> {
+                return Dijkstra(maze)
+            }
+            "6" -> {
+                return AStar(maze)
             }
             null, "" -> return RandomSearch(maze)
             else -> {
@@ -70,9 +88,7 @@ fun selectSpeed(): Long {
         println("Enter iterator speed in milliseconds (0-2000):")
         val input = readLine()
         when (input) {
-            "exit" -> {
-                return@loop
-            }
+            "exit" -> break@loop
             null, "" -> return 0
         }
         try {
