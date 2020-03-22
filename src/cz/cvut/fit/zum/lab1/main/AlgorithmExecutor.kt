@@ -33,9 +33,9 @@ class AlgorithmExecutor(private val maze: Maze) {
             }
             i++
         }
-        println(algorithm.finishMessage)
         println("\nAlgorithm ${algorithm.name} finished in $i iterations.")
         println("Nodes expanded: ${algorithm.expandedNumber}")
+        println(algorithm.finishMessage)
     }
 
      fun compare() {
