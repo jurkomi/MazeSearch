@@ -6,13 +6,19 @@ class Node(val x: Int, val y: Int, var state: State) {
     var pathLength = 1
 
     fun finish(paintPath: Boolean): Int {
-        if (paintPath) paintPath()
+        if (paintPath) {
+            if (state == State.CLOSED) state = State.PATH
+            var n = prevNode
+            while (n != null) {
+                n = n.paintPath()
+            }
+        }
         return pathLength
     }
 
-    private fun paintPath() {
+    private fun paintPath(): Node? {
         if (state == State.CLOSED) state = State.PATH
-        if (prevNode != null) prevNode!!.paintPath()
+        return prevNode
     }
 
     fun open (node: Node) {
