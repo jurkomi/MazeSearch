@@ -1,22 +1,28 @@
 package cz.cvut.fit.zum.lab1.maze
 
-class Node(val x: Int, val y: Int, var state: State) : Component {
+class Node(val x: Int, val y: Int, var state: State) {
     var position = Pair(x,y)
+    var prevNode: Node? = null
+    var pathLength = 1
 
-    override fun getNode(): Node {
-        return this
+    fun finish(paintPath: Boolean): Int {
+        if (paintPath) paintPath()
+        return pathLength
     }
 
-    override fun finish(): String {
-        return "End node found."
+    private fun paintPath() {
+        if (state == State.CLOSED) state = State.PATH
+        if (prevNode != null) prevNode!!.paintPath()
     }
 
-    override fun getComponent(node: Node): Component {
-        return node
+    fun open (node: Node) {
+        state = State.OPENED
+        prevNode = node
+        pathLength += node.pathLength
     }
 
-    override fun count(): Int {
-        return 1
+    fun count(): Int {
+        return pathLength
     }
 
     fun copyNode(): Node {

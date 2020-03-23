@@ -35,7 +35,7 @@ class AlgorithmExecutor(private val maze: Maze) {
         }
         println("\nAlgorithm ${algorithm.name} finished in $i iterations.")
         println("Nodes expanded: ${algorithm.expandedNumber}")
-        println(algorithm.finishMessage)
+        println("Path length: ${algorithm.pathLength}")
     }
 
      fun compare() {
@@ -60,6 +60,7 @@ class AlgorithmExecutor(private val maze: Maze) {
         val pathMap = mutableMapOf<String, Int>()
         algorithms.forEach { algorithm ->
             var i = 0
+            algorithm.paintPath = false
             while(!algorithm.finished) {
                 algorithm.openNodes()
                 if (!algorithm.finished) {
@@ -69,7 +70,7 @@ class AlgorithmExecutor(private val maze: Maze) {
             }
             iterationsMap[algorithm.name] = i
             expandedMap[algorithm.name] = algorithm.expandedNumber
-            pathMap[algorithm.name] = algorithm.finishMessage.split(" ").last().toIntOrNull() ?: -1
+            pathMap[algorithm.name] = algorithm.pathLength
         }
         printScore(iterationsMap, "Iterations:")
         printScore(expandedMap, "Nodes expanded:")

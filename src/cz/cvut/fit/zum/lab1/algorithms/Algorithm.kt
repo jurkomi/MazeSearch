@@ -1,6 +1,5 @@
 package cz.cvut.fit.zum.lab1.algorithms
 
-import cz.cvut.fit.zum.lab1.maze.Component
 import cz.cvut.fit.zum.lab1.maze.Maze
 import cz.cvut.fit.zum.lab1.maze.Node
 import cz.cvut.fit.zum.lab1.maze.State
@@ -10,18 +9,19 @@ abstract class Algorithm(val maze: Maze) {
     var finished = false
         private set
     private var position = maze.start
-    protected val opened = mutableListOf<Component>()
-    protected var current: Component = maze.getNodeByPosition(maze.start)
+    protected val opened = mutableListOf<Node>()
+    private var current: Node = maze.getNodeByPosition(maze.start)
     abstract val name: String
     var expandedNumber = 0
-    var finishMessage: String = ""
+    var pathLength = -1
+    var paintPath = true
 
     fun expand() {
         if (hasNext()) {
             val exp = next()
-            position = exp.getNode().position
+            position = exp.position
             current = exp
-            exp.getNode().state = State.PATH
+            exp.state = State.CLOSED
             opened.remove(exp)
         }
         else finished = true
@@ -32,18 +32,18 @@ abstract class Algorithm(val maze: Maze) {
             if (neighbour.state == State.END) {
                 expandedNumber++
                 finished = true
-                finishMessage = current.finish()
+                pathLength = current.finish(paintPath)
                 return
             }
             if (isFresh(neighbour)) {
-                neighbour.state = State.OPENED
+                neighbour.open(current)
                 expandedNumber++
-                opened.add(current.getComponent(neighbour))
+                opened.add(neighbour)
             }
         }
     }
 
-    protected abstract fun next(): Component
+    protected abstract fun next(): Node
 
     private fun hasNext(): Boolean {
         return opened.isNotEmpty()
