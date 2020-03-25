@@ -3,6 +3,8 @@ package cz.cvut.fit.zum.lab1.algorithms
 import cz.cvut.fit.zum.lab1.maze.Maze
 import cz.cvut.fit.zum.lab1.maze.Node
 import cz.cvut.fit.zum.lab1.maze.State
+import cz.cvut.fit.zum.lab1.positions.*
+import kotlin.streams.toList
 
 abstract class Algorithm(val maze: Maze) {
 
@@ -18,24 +20,22 @@ abstract class Algorithm(val maze: Maze) {
 
     fun expand() {
         if (hasNext()) {
-            val exp = next()
-            position = exp.position
-            current = exp
-            exp.state = State.CLOSED
-            opened.remove(exp)
+            current = next()
+            position = current.position
+            if (current.state == State.END) {
+                finished = true
+                pathLength = current.finish(paintPath)
+            } else {
+                current.state = State.CLOSED
+                opened.remove(current)
+            }
         }
         else finished = true
     }
 
     fun openNodes() {
         getAllNeighbours().forEach { neighbour ->
-            if (neighbour.state == State.END) {
-                expandedNumber++
-                finished = true
-                pathLength = current.finish(paintPath)
-                return
-            }
-            if (isFresh(neighbour)) {
+            if (isFreshOrEnd(neighbour)) {
                 neighbour.open(current)
                 expandedNumber++
                 opened.add(neighbour)
@@ -49,29 +49,22 @@ abstract class Algorithm(val maze: Maze) {
         return opened.isNotEmpty()
     }
 
-
     private fun getAllNeighbours(): List<Node> {
-        return listOf(getUpper(), getLeft(), getRight(), getBottom())
+        val positions = listOf(
+            PositionUpper(),
+            PositionLeft(),
+            PositionRight(),
+            PositionBottom()
+        )
+        return positions.map(this::getNode)
     }
 
-    private fun getUpper(): Node {
-        return maze.getNodeByPosition(Pair(position.first-1, position.second))
+    private fun getNode(pos: Position): Node {
+        return maze.getNodeByPosition(Pair(position.first + pos.x, position.second + pos.y))
     }
 
-    private fun getLeft(): Node {
-        return maze.getNodeByPosition(Pair(position.first, position.second-1))
-    }
-
-    private fun getRight(): Node {
-        return maze.getNodeByPosition(Pair(position.first, position.second+1))
-    }
-
-    private fun getBottom(): Node {
-        return maze.getNodeByPosition(Pair(position.first+1, position.second))
-    }
-
-    private fun isFresh(node: Node?): Boolean {
-        return (node != null && node.state == State.FRESH)
+    private fun isFreshOrEnd(node: Node?): Boolean {
+        return (node != null && (node.state == State.FRESH || node.state == State.END))
     }
 
     fun checkEndtStart() {

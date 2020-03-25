@@ -2,7 +2,7 @@ package cz.cvut.fit.zum.lab1.main
 
 import cz.cvut.fit.zum.lab1.algorithms.*
 import cz.cvut.fit.zum.lab1.maze.Maze
-import java.io.FileNotFoundException
+import java.io.FileNotFoundException as FileNotFoundException
 
 fun main() {
     val maze = checkForFile()
@@ -25,7 +25,8 @@ private fun checkForFile(): Maze? {
         file = readLine()
         when (file) {
             "exit" -> break@loop
-            null, "" -> {}
+            null, "" -> {
+            }
             else -> {
                 try {
                     maze = FileLoader(file).getMaze()
@@ -43,8 +44,10 @@ private fun checkForFile(): Maze? {
 private fun selectAlgorithm(maze: Maze): Algorithm? {
     var selected: String? = null
     loop@ while (selected.isNullOrEmpty()) {
-        println("Select algorithm (1 - Random Search, 2 - DFS, 3 - BFS, " +
-                "4 - Greedy Search, 5 - Dijkstra, 6 - A*, 0 - compare all):")
+        println(
+            "Select algorithm (1 - Random Search, 2 - DFS, 3 - BFS, " +
+                    "4 - Greedy Search, 5 - Dijkstra, 6 - A*, 0 - compare all):"
+        )
         selected = readLine()
         when (selected) {
             "exit" -> break@loop
@@ -94,7 +97,7 @@ private fun selectSpeed(): Long {
         }
         try {
             speed = input!!.toLong()
-            if (speed in 0..2000)  return speed
+            if (speed in 0..2000) return speed
         } catch (e: NumberFormatException) {
         }
         println("Please set speed betweeen 0 and 2000 ms!")

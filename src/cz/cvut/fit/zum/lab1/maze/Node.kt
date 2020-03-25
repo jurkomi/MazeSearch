@@ -3,7 +3,7 @@ package cz.cvut.fit.zum.lab1.maze
 class Node(val x: Int, val y: Int, var state: State) {
     var position = Pair(x,y)
     var prevNode: Node? = null
-    var pathLength = 1
+    var pathLength = 0
 
     fun finish(paintPath: Boolean): Int {
         if (paintPath) {
@@ -22,9 +22,9 @@ class Node(val x: Int, val y: Int, var state: State) {
     }
 
     fun open (node: Node) {
-        state = State.OPENED
+        if (state == State.FRESH) state = State.OPENED
         prevNode = node
-        pathLength += node.pathLength
+        pathLength = node.pathLength + 1
     }
 
     fun count(): Int {
