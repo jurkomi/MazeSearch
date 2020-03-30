@@ -3,8 +3,11 @@ package cz.cvut.fit.zum.lab1.algorithms
 import cz.cvut.fit.zum.lab1.maze.Maze
 import cz.cvut.fit.zum.lab1.maze.Node
 import cz.cvut.fit.zum.lab1.maze.State
-import cz.cvut.fit.zum.lab1.positions.*
-import kotlin.streams.toList
+
+private val upperPosition = Pair(-1, 0)
+private val leftPosition = Pair(0, -1)
+private val bottomPosition = Pair(1, 0)
+private val rightPosition = Pair(0, 1)
 
 abstract class Algorithm(val maze: Maze) {
 
@@ -50,17 +53,12 @@ abstract class Algorithm(val maze: Maze) {
     }
 
     private fun getAllNeighbours(): List<Node> {
-        val positions = listOf(
-            PositionUpper(),
-            PositionLeft(),
-            PositionRight(),
-            PositionBottom()
-        )
+        val positions = listOf(upperPosition, leftPosition, rightPosition, bottomPosition)
         return positions.map(this::getNode)
     }
 
-    private fun getNode(pos: Position): Node {
-        return maze.getNodeByPosition(Pair(position.first + pos.x, position.second + pos.y))
+    private fun getNode(pos: Pair<Int, Int>): Node {
+        return maze.getNodeByPosition(Pair(position.first + pos.first, position.second + pos.second))
     }
 
     private fun isFreshOrEnd(node: Node?): Boolean {

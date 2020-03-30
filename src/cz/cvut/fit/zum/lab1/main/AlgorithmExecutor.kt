@@ -39,11 +39,7 @@ class AlgorithmExecutor(private val maze: Maze) {
     }
 
      fun compare() {
-        val algorithms = mutableListOf<Algorithm>(
-            RandomSearch(
-                maze
-            )
-        )
+        val algorithms = mutableListOf<Algorithm>(RandomSearch(maze))
         initMaze(algorithms.first(), 30)
         algorithms.add(DepthFirstSearch(maze.copy()))
         algorithms.add(BreadthFirstSearch(maze.copy()))
